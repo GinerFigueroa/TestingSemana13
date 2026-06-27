@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pruebas Estructurales – Resumen Visual</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600;700;800&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #F7F8FC;
+    --surface:   #FFFFFF;
+    --navy:      #1E1B4B;
+    --indigo:    #3730A3;
+    --indigo-lt: #EEF2FF;
+    --violet:    #7C3AED;
+    --amber:     #F59E0B;
+    --amber-lt:  #FFFBEB;
+    --teal:      #0D9488;
+    --teal-lt:   #F0FDFA;
+    --red:       #DC2626;
+    --red-lt:    #FEF2F2;
+    --green:     #16A34A;
+    --green-lt:  #F0FDF4;
+    --gray:      #6B7280;
+    --border:    #E5E7EB;
+    --text:      #111827;
+    --mono:      'JetBrains Mono', monospace;
+    --sans:      'Inter', sans-serif;
+  }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--indigo) 60%, var(--violet) 100%);
+    color: #fff;
+    padding: 56px 40px 48px;
+    text-align: center;
+  }
+  header .badge {
+    display: inline-block;
+    background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.3);
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    margin-bottom: 20px;
+  }
+  header h1 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    letter-spacing: -.02em;
+    margin-bottom: 12px;
+  }
+  header p {
+    opacity: .8;
+    max-width: 560px;
+    margin: 0 auto;
+    font-size: .95rem;
+  }
+  .pill-row {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+    margin-top: 28px;
+  }
+  .pill {
+    background: rgba(255,255,255,.18);
+    border-radius: 999px;
+    padding: 4px 14px;
+    font-size: .78rem;
+    font-weight: 600;
+  }
+
+  /* ── LAYOUT ── */
+  main { max-width: 980px; margin: 0 auto; padding: 48px 20px 64px; }
+
+  .section-label {
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--indigo);
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--navy);
+    margin-bottom: 32px;
+    letter-spacing: -.01em;
+  }
+
+  /* ── INTRO BLOCK ── */
+  .intro-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 56px;
+  }
+  @media (max-width: 600px) { .intro-grid { grid-template-columns: 1fr; } }
+  .intro-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+  }
+  .intro-card h3 { font-size: .85rem; font-weight: 700; color: var(--indigo); margin-bottom: 8px; }
+  .intro-card p  { font-size: .88rem; color: #374151; }
+
+  /* ── COVERAGE CARDS ── */
+  .coverage-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 32px;
+    margin-bottom: 28px;
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 32px;
+    align-items: start;
+  }
+  @media (max-width: 700px) {
+    .coverage-block { grid-template-columns: 1fr; }
+  }
+  .coverage-block.amber  { border-left: 4px solid var(--amber);  }
+  .coverage-block.teal   { border-left: 4px solid var(--teal);   }
+  .coverage-block.violet { border-left: 4px solid var(--violet); }
+  .coverage-block.red    { border-left: 4px solid var(--red);    }
+  .coverage-block.green  { border-left: 4px solid var(--green);  }
+
+  .cb-tag {
+    display: inline-block;
+    font-size: .68rem; font-weight: 700;
+    letter-spacing: .1em; text-transform: uppercase;
+    border-radius: 6px; padding: 3px 10px;
+    margin-bottom: 10px;
+  }
+  .amber .cb-tag  { background: var(--amber-lt);  color: #92400E; }
+  .teal  .cb-tag  { background: var(--teal-lt);   color: #134E4A; }
+  .violet .cb-tag { background: var(--indigo-lt); color: var(--violet); }
+  .red    .cb-tag { background: var(--red-lt);    color: var(--red); }
+  .green  .cb-tag { background: var(--green-lt);  color: var(--green); }
+
+  .cb-title { font-size: 1.1rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+  .cb-desc  { font-size: .87rem; color: #374151; margin-bottom: 16px; }
+
+  .formula-box {
+    background: var(--indigo-lt);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-family: var(--mono);
+    font-size: .82rem;
+    color: var(--indigo);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .cases-list { list-style: none; }
+  .cases-list li {
+    display: flex; gap: 10px; align-items: flex-start;
+    font-size: .84rem; color: #374151;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .cases-list li:last-child { border-bottom: none; }
+  .cases-list .dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    margin-top: 6px;
+  }
+  .amber .dot  { background: var(--amber); }
+  .teal  .dot  { background: var(--teal); }
+  .violet .dot { background: var(--violet); }
+  .red    .dot { background: var(--red); }
+  .green  .dot { background: var(--green); }
+
+  .graph-panel { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .graph-label { font-size: .7rem; font-weight: 600; color: var(--gray); text-transform: uppercase; letter-spacing: .06em; }
+
+  /* ── CODE SNIPPET ── */
+  .code-block {
+    background: #1E1B4B;
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-family: var(--mono);
+    font-size: .78rem;
+    color: #C4B5FD;
+    margin-bottom: 14px;
+    overflow-x: auto;
+  }
+  .code-block .kw  { color: #A78BFA; }
+  .code-block .fn  { color: #60A5FA; }
+  .code-block .num { color: #FCA5A5; }
+  .code-block .cm  { color: #6B7280; }
+
+  /* ── EXAMPLE SECTION ── */
+  .example-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 32px;
+    margin-bottom: 28px;
+  }
+  .example-section h3 { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 16px; }
+
+  .ex-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  @media (max-width: 700px) { .ex-grid { grid-template-columns: 1fr; } }
+  .ex-card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+  }
+  .ex-card .big-num { font-size: 2.2rem; font-weight: 800; }
+  .ex-card .label   { font-size: .75rem; font-weight: 600; color: var(--gray); margin-top: 4px; }
+  .ex-card.s { background: var(--amber-lt); }
+  .ex-card.s .big-num { color: #92400E; }
+  .ex-card.d { background: var(--teal-lt); }
+  .ex-card.d .big-num { color: var(--teal); }
+  .ex-card.p { background: var(--indigo-lt); }
+  .ex-card.p .big-num { color: var(--indigo); }
+
+  /* ── MCC TABLE ── */
+  .mcc-table {
+    width: 100%; border-collapse: collapse;
+    font-size: .85rem; margin: 16px 0;
+  }
+  .mcc-table th {
+    background: var(--navy); color: #fff;
+    padding: 10px 16px; text-align: center;
+    font-size: .78rem; letter-spacing: .05em;
+  }
+  .mcc-table th:first-child { border-radius: 8px 0 0 0; }
+  .mcc-table th:last-child  { border-radius: 0 8px 0 0; }
+  .mcc-table td {
+    padding: 10px 16px; text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .mcc-table tr:nth-child(even) td { background: #F9FAFB; }
+  .t  { color: var(--green); font-weight: 700; }
+  .f  { color: var(--red);   font-weight: 700; }
+
+  /* ── COMPARISON TABLE ── */
+  .comp-table-wrap { overflow-x: auto; }
+  .comp-table {
+    width: 100%; border-collapse: collapse;
+    font-size: .85rem;
+  }
+  .comp-table th {
+    background: var(--navy); color: #fff;
+    padding: 12px 16px; text-align: left;
+    font-weight: 600; font-size: .8rem;
+  }
+  .comp-table th:first-child { border-radius: 10px 0 0 0; }
+  .comp-table th:last-child  { border-radius: 0 10px 0 0; }
+  .comp-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .comp-table tr:last-child td:first-child { border-radius: 0 0 0 10px; }
+  .comp-table tr:last-child td:last-child  { border-radius: 0 0 10px 0; }
+  .comp-table tr:nth-child(even) td { background: #F9FAFB; }
+  .comp-table td:first-child { font-weight: 600; color: var(--navy); }
+
+  /* ── LOOP SECTION ── */
+  .loop-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px; margin-top: 8px;
+  }
+  @media (max-width: 680px) { .loop-grid { grid-template-columns: 1fr; } }
+  .loop-card {
+    border: 1px solid var(--border);
+    border-radius: 14px; padding: 20px;
+    background: var(--surface);
+  }
+  .loop-card h4 { font-size: .88rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+  .loop-card p  { font-size: .8rem; color: #374151; }
+  .loop-badge {
+    font-size: .65rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .08em; border-radius: 6px; padding: 2px 8px;
+    display: inline-block; margin-bottom: 8px;
+  }
+
+  /* ── FOOTER NOTE ── */
+  .footer-note {
+    background: linear-gradient(135deg, var(--indigo-lt), #EDE9FE);
+    border: 1px solid #DDD6FE;
+    border-radius: 14px; padding: 24px 28px;
+    margin-top: 40px; font-size: .85rem; color: #4338CA;
+  }
+  .footer-note strong { display: block; margin-bottom: 6px; font-size: .95rem; }
+
+  /* ── SVG NODES STYLING ── */
+  .node-label { font-family: var(--mono); font-size: 10px; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════ HEADER ═══════════════════════════ -->
+<header>
+  <div class="badge">Ingeniería de Software</div>
+  <h1>Pruebas Estructurales (Caja Blanca)</h1>
+  <p>Resumen visual completo: tipos de cobertura, grafos de flujo, nodos y casos de prueba.</p>
+  <div class="pill-row">
+    <span class="pill">Cobertura de Sentencias</span>
+    <span class="pill">Cobertura de Decisiones</span>
+    <span class="pill">Cobertura de Condiciones</span>
+    <span class="pill">Cobertura de Caminos</span>
+    <span class="pill">Pruebas de Bucles</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- ═══════════════════════════ INTRO ═══════════════════════════ -->
+  <div class="section-label">¿Qué son?</div>
+  <div class="section-title">Conceptos base del Grafo de Flujo de Control</div>
+
+  <div class="intro-grid">
+    <div class="intro-card">
+      <h3>⬤ &nbsp;Nodos</h3>
+      <p>Representan instrucciones, bloques de código o decisiones (<em>if, else</em>). Cada sentencia ejecutable es un nodo.</p>
+    </div>
+    <div class="intro-card">
+      <h3>→ &nbsp;Aristas</h3>
+      <p>Son las flechas que conectan nodos y muestran el flujo de ejecución: paso entre instrucciones o ramas de decisión.</p>
+    </div>
+    <div class="intro-card">
+      <h3>◻ &nbsp;Regiones</h3>
+      <p>Áreas cerradas del grafo (incluida la exterior). Se usan para calcular la <strong>complejidad ciclomática</strong>.</p>
+    </div>
+    <div class="intro-card">
+      <h3>⟶ &nbsp;Caminos</h3>
+      <p>Secuencias completas de nodos y aristas desde el inicio hasta el fin del programa. Cada ruta posible es un camino.</p>
+    </div>
+  </div>
+
+  <!-- ═════════════════ 1. COBERTURA DE SENTENCIAS ════════════════ -->
+  <div class="section-label">Tipo 1</div>
+  <div class="section-title">Coberturas explicadas con grafos</div>
+
+  <div class="coverage-block amber">
+    <div>
+      <div class="cb-tag">C1 · Sentencias</div>
+      <div class="cb-title">Cobertura de Sentencias (Statement Coverage)</div>
+      <p class="cb-desc">Ejecutar <strong>cada instrucción del programa al menos una vez</strong>. Es el nivel más básico. Equivale a cubrir todos los nodos del grafo.</p>
+
+      <div class="formula-box">Cobertura = (nodos ejecutados / nodos totales) × 100</div>
+
+      <div class="code-block">
+<span class="kw">if</span> x &gt; <span class="num">0</span>:
+    print(<span class="num">"Positivo"</span>)   <span class="cm"># ← nodo 2</span>
+print(<span class="num">"Fin"</span>)            <span class="cm"># ← nodo 3</span>
+      </div>
+
+      <ul class="cases-list">
+        <li><span class="dot"></span><strong>Caso x = 5</strong> → ejecuta nodos 1, 2 y 3 → 100% sentencias</li>
+        <li><span class="dot"></span>Un solo caso puede alcanzar 100% si la ruta TRUE cubre todos los nodos.</li>
+        <li><span class="dot"></span>⚠️ No garantiza probar la rama FALSE.</li>
+      </ul>
+    </div>
+    <div class="graph-panel">
+      <div class="graph-label">Grafo de Flujo</div>
+      <!-- SVG: nodos 1→2→3, todos coloreados (100% sentencias) -->
+      <svg width="160" height="280" viewBox="0 0 160 280">
+        <defs>
+          <marker id="arrowA" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L6,3 L0,6 Z" fill="#F59E0B"/>
+          </marker>
+        </defs>
+        <!-- Nodo 1: Inicio -->
+        <ellipse cx="80" cy="36" rx="34" ry="22" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2.5"/>
+        <text x="80" y="41" text-anchor="middle" class="node-label" fill="#92400E">INICIO</text>
+        <!-- Nodo 2: x > 0 decision -->
+        <rect x="42" y="78" width="76" height="40" rx="8" fill="#FFFBEB" stroke="#F59E0B" stroke-width="2.5"/>
+        <text x="80" y="95" text-anchor="middle" class="node-label" fill="#92400E">x &gt; 0 ?</text>
+        <text x="80" y="110" text-anchor="middle" class="node-label" fill="#92400E">(decisión)</text>
+        <!-- Nodo 3: print Positivo -->
+        <rect x="10" y="148" width="70" height="36" rx="8" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2.5"/>
+        <text x="45" y="165" text-anchor="middle" class="node-label" fill="#92400E">"Positivo"</text>
+        <text x="45" y="178" text-anchor="middle" class="node-label" fill="#B45309">TRUE</text>
+        <!-- Nodo 4: print Fin -->
+        <rect x="42" y="215" width="76" height="36" rx="8" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2.5"/>
+        <text x="80" y="233" text-anchor="middle" class="node-label" fill="#92400E">"Fin"</text>
+        <!-- Aristas -->
+        <line x1="80" y1="58" x2="80" y2="78" stroke="#F59E0B" stroke-width="2" marker-end="url(#arrowA)"/>
+        <line x1="60" y1="118" x2="45" y2="148" stroke="#F59E0B" stroke-width="2" marker-end="url(#arrowA)"/>
+        <line x1="45" y1="184" x2="72" y2="215" stroke="#F59E0B" stroke-width="2" marker-end="url(#arrowA)"/>
+        <!-- FALSE branch: sin uso para sentencias -->
+        <line x1="100" y1="118" x2="120" y2="148" stroke="#D1D5DB" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <text x="126" y="145" class="node-label" fill="#9CA3AF">FALSE</text>
+        <line x1="118" y1="162" x2="100" y2="215" stroke="#D1D5DB" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <!-- Badges -->
+        <text x="80" y="270" text-anchor="middle" font-family="Inter" font-size="9" fill="#92400E" font-weight="700">1 caso → 100% nodos</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ═════════════════ 2. COBERTURA DE DECISIONES ════════════════ -->
+  <div class="coverage-block teal">
+    <div>
+      <div class="cb-tag">C2 · Decisiones</div>
+      <div class="cb-title">Cobertura de Decisiones (Branch Coverage)</div>
+      <p class="cb-desc">Cada decisión (<em>if/else, switch</em>) debe tomar <strong>ambas ramas: TRUE y FALSE</strong>. Siempre requiere ≥ 2 casos.</p>
+
+      <div class="code-block">
+<span class="kw">if</span> x &gt; <span class="num">0</span>:
+    print(<span class="num">"Positivo"</span>)   <span class="cm"># ← rama TRUE</span>
+<span class="kw">else</span>:
+    print(<span class="num">"Negativo"</span>)   <span class="cm"># ← rama FALSE</span>
+      </div>
+
+      <ul class="cases-list">
+        <li><span class="dot"></span><strong>Caso 1: x = 5</strong> → entra rama TRUE ✔</li>
+        <li><span class="dot"></span><strong>Caso 2: x = -2</strong> → entra rama FALSE ✔</li>
+        <li><span class="dot"></span>Resultado: <strong>2 casos de prueba</strong> → 100% decisiones</li>
+      </ul>
+    </div>
+    <div class="graph-panel">
+      <div class="graph-label">Grafo de Flujo</div>
+      <svg width="180" height="290" viewBox="0 0 180 290">
+        <defs>
+          <marker id="arrowT" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L6,3 L0,6 Z" fill="#0D9488"/>
+          </marker>
+        </defs>
+        <!-- Nodo inicio -->
+        <ellipse cx="90" cy="36" rx="36" ry="22" fill="#CCFBF1" stroke="#0D9488" stroke-width="2.5"/>
+        <text x="90" y="41" text-anchor="middle" class="node-label" fill="#134E4A">INICIO</text>
+        <!-- Decisión -->
+        <polygon points="90,78 140,112 90,146 40,112" fill="#F0FDFA" stroke="#0D9488" stroke-width="2.5"/>
+        <text x="90" y="109" text-anchor="middle" class="node-label" fill="#134E4A">x &gt; 0 ?</text>
+        <!-- TRUE branch -->
+        <rect x="10" y="162" width="65" height="36" rx="8" fill="#CCFBF1" stroke="#0D9488" stroke-width="2.5"/>
+        <text x="42" y="182" text-anchor="middle" class="node-label" fill="#134E4A">"Positivo"</text>
+        <!-- FALSE branch -->
+        <rect x="105" y="162" width="65" height="36" rx="8" fill="#CCFBF1" stroke="#0D9488" stroke-width="2.5"/>
+        <text x="137" y="182" text-anchor="middle" class="node-label" fill="#134E4A">"Negativo"</text>
+        <!-- FIN -->
+        <ellipse cx="90" cy="252" rx="36" ry="22" fill="#CCFBF1" stroke="#0D9488" stroke-width="2.5"/>
+        <text x="90" y="257" text-anchor="middle" class="node-label" fill="#134E4A">FIN</text>
+        <!-- Aristas inicio → decisión -->
+        <line x1="90" y1="58" x2="90" y2="78" stroke="#0D9488" stroke-width="2" marker-end="url(#arrowT)"/>
+        <!-- decisión → TRUE -->
+        <line x1="55" y1="120" x2="42" y2="162" stroke="#0D9488" stroke-width="2" marker-end="url(#arrowT)"/>
+        <text x="18" y="145" class="node-label" fill="#0D9488" font-weight="700">TRUE</text>
+        <!-- decisión → FALSE -->
+        <line x1="125" y1="120" x2="137" y2="162" stroke="#0D9488" stroke-width="2" marker-end="url(#arrowT)"/>
+        <text x="136" y="145" class="node-label" fill="#0D9488" font-weight="700">FALSE</text>
+        <!-- TRUE → FIN -->
+        <line x1="55" y1="198" x2="72" y2="230" stroke="#0D9488" stroke-width="2" marker-end="url(#arrowT)"/>
+        <!-- FALSE → FIN -->
+        <line x1="123" y1="198" x2="108" y2="230" stroke="#0D9488" stroke-width="2" marker-end="url(#arrowT)"/>
+        <text x="90" y="284" text-anchor="middle" font-family="Inter" font-size="9" fill="#134E4A" font-weight="700">2 casos → 100% ramas</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ═════════════════ 3. COBERTURA DE CONDICIONES ════════════════ -->
+  <div class="coverage-block violet">
+    <div>
+      <div class="cb-tag">C3 · Condiciones / MCC</div>
+      <div class="cb-title">Cobertura de Condiciones Múltiples (MCC)</div>
+      <p class="cb-desc">Cada sub-condición booleana debe evaluarse como <strong>TRUE y FALSE</strong>. Con <em>n</em> sub-condiciones → 2ⁿ combinaciones.</p>
+
+      <div class="code-block">
+<span class="kw">if</span> (a &gt; <span class="num">0</span> <span class="kw">and</span> b &gt; <span class="num">0</span>):
+    print(<span class="num">"Ambos positivos"</span>)
+      </div>
+
+      <table class="mcc-table">
+        <tr>
+          <th>Caso</th><th>A &gt; 0</th><th>B &gt; 0</th><th>Resultado</th>
+        </tr>
+        <tr>
+          <td>1</td><td class="f">F</td><td class="f">F</td><td class="f">FALSE</td>
+        </tr>
+        <tr>
+          <td>2</td><td class="f">F</td><td class="t">T</td><td class="f">FALSE</td>
+        </tr>
+        <tr>
+          <td>3</td><td class="t">T</td><td class="f">F</td><td class="f">FALSE</td>
+        </tr>
+        <tr>
+          <td>4</td><td class="t">T</td><td class="t">T</td><td class="t">TRUE</td>
+        </tr>
+      </table>
+
+      <ul class="cases-list">
+        <li><span class="dot"></span>2 sub-condiciones → 2² = <strong>4 casos</strong> → MCC 100%</li>
+        <li><span class="dot"></span>MCC es más estricta que decisión (C2) y sentencia (C1)</li>
+      </ul>
+    </div>
+    <div class="graph-panel">
+      <div class="graph-label">Árbol de Condiciones</div>
+      <!-- Visual de árbol de condiciones booleanas -->
+      <svg width="200" height="280" viewBox="0 0 200 280">
+        <!-- Raíz -->
+        <rect x="60" y="10" width="80" height="32" rx="8" fill="#EDE9FE" stroke="#7C3AED" stroke-width="2.5"/>
+        <text x="100" y="32" text-anchor="middle" class="node-label" fill="#5B21B6">A&gt;0 AND B&gt;0</text>
+        <!-- A>0 -->
+        <rect x="18" y="72" width="62" height="28" rx="7" fill="#EDE9FE" stroke="#7C3AED" stroke-width="2"/>
+        <text x="49" y="88" text-anchor="middle" class="node-label" fill="#5B21B6">A &gt; 0</text>
+        <!-- B>0 -->
+        <rect x="120" y="72" width="62" height="28" rx="7" fill="#EDE9FE" stroke="#7C3AED" stroke-width="2"/>
+        <text x="151" y="88" text-anchor="middle" class="node-label" fill="#5B21B6">B &gt; 0</text>
+        <!-- Lines from root -->
+        <line x1="85" y1="42" x2="55" y2="72" stroke="#7C3AED" stroke-width="1.5"/>
+        <line x1="115" y1="42" x2="145" y2="72" stroke="#7C3AED" stroke-width="1.5"/>
+        <!-- True/False for A -->
+        <rect x="2" y="130" width="32" height="22" rx="5" fill="#DCFCE7" stroke="#16A34A" stroke-width="1.5"/>
+        <text x="18" y="145" text-anchor="middle" class="node-label" fill="#166534">T</text>
+        <rect x="40" y="130" width="32" height="22" rx="5" fill="#FEE2E2" stroke="#DC2626" stroke-width="1.5"/>
+        <text x="56" y="145" text-anchor="middle" class="node-label" fill="#991B1B">F</text>
+        <line x1="35" y1="100" x2="22" y2="130" stroke="#7C3AED" stroke-width="1.5"/>
+        <line x1="60" y1="100" x2="56" y2="130" stroke="#7C3AED" stroke-width="1.5"/>
+        <!-- True/False for B -->
+        <rect x="108" y="130" width="32" height="22" rx="5" fill="#DCFCE7" stroke="#16A34A" stroke-width="1.5"/>
+        <text x="124" y="145" text-anchor="middle" class="node-label" fill="#166534">T</text>
+        <rect x="148" y="130" width="32" height="22" rx="5" fill="#FEE2E2" stroke="#DC2626" stroke-width="1.5"/>
+        <text x="164" y="145" text-anchor="middle" class="node-label" fill="#991B1B">F</text>
+        <line x1="137" y1="100" x2="124" y2="130" stroke="#7C3AED" stroke-width="1.5"/>
+        <line x1="163" y1="100" x2="162" y2="130" stroke="#7C3AED" stroke-width="1.5"/>
+        <!-- Combinaciones -->
+        <text x="100" y="188" text-anchor="middle" font-family="Inter" font-size="9" fill="#5B21B6" font-weight="700">4 combinaciones posibles</text>
+        <text x="100" y="202" text-anchor="middle" font-family="Inter" font-size="9" fill="#5B21B6">2² = FF · FT · TF · TT</text>
+        <!-- Leyenda -->
+        <rect x="20" y="220" width="160" height="48" rx="8" fill="#EDE9FE" stroke="#C4B5FD" stroke-width="1"/>
+        <text x="100" y="238" text-anchor="middle" font-family="Inter" font-size="8.5" fill="#5B21B6" font-weight="700">Regla MCC</text>
+        <text x="100" y="252" text-anchor="middle" font-family="Inter" font-size="8" fill="#6D28D9">n sub-condiciones → 2ⁿ casos</text>
+        <text x="100" y="264" text-anchor="middle" font-family="Inter" font-size="8" fill="#6D28D9">para cobertura 100%</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ═════════════════ 4. COBERTURA DE CAMINOS ════════════════ -->
+  <div class="coverage-block red">
+    <div>
+      <div class="cb-tag">C4 · Caminos</div>
+      <div class="cb-title">Cobertura de Caminos (Path Coverage)</div>
+      <p class="cb-desc">Recorrer <strong>todos los caminos posibles</strong> del programa desde inicio hasta fin. Es la más completa pero costosa.</p>
+
+      <div class="code-block">
+<span class="kw">def</span> <span class="fn">descuento</span>(monto):
+    <span class="kw">if</span> monto &gt; <span class="num">100</span>:
+        <span class="kw">return</span> monto * <span class="num">0.80</span>  <span class="cm"># camino 1</span>
+    <span class="kw">return</span> monto * <span class="num">0.90</span>      <span class="cm"># camino 2</span>
+      </div>
+
+      <ul class="cases-list">
+        <li><span class="dot"></span><strong>Camino 1:</strong> monto=150 → IF true → return 0.80</li>
+        <li><span class="dot"></span><strong>Camino 2:</strong> monto=50 → IF false → return 0.90</li>
+        <li><span class="dot"></span>Total: <strong>2 casos</strong> cubren todos los caminos</li>
+        <li><span class="dot"></span>⚠️ En programas grandes el número de caminos crece exponencialmente</li>
+      </ul>
+    </div>
+    <div class="graph-panel">
+      <div class="graph-label">Dos Caminos Posibles</div>
+      <svg width="200" height="290" viewBox="0 0 200 290">
+        <defs>
+          <marker id="arrowR1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L6,3 L0,6 Z" fill="#DC2626"/>
+          </marker>
+          <marker id="arrowR2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L6,3 L0,6 Z" fill="#9CA3AF"/>
+          </marker>
+        </defs>
+        <!-- INICIO -->
+        <ellipse cx="100" cy="30" rx="40" ry="20" fill="#FEE2E2" stroke="#DC2626" stroke-width="2.5"/>
+        <text x="100" y="35" text-anchor="middle" class="node-label" fill="#991B1B">INICIO</text>
+        <!-- Decisión -->
+        <polygon points="100,68 155,100 100,132 45,100" fill="#FFF" stroke="#DC2626" stroke-width="2.5"/>
+        <text x="100" y="97" text-anchor="middle" class="node-label" fill="#991B1B">monto</text>
+        <text x="100" y="112" text-anchor="middle" class="node-label" fill="#991B1B">&gt; 100?</text>
+        <!-- Camino 1: TRUE -->
+        <rect x="10" y="152" width="70" height="36" rx="8" fill="#FEE2E2" stroke="#DC2626" stroke-width="2.5"/>
+        <text x="45" y="169" text-anchor="middle" class="node-label" fill="#991B1B">×0.80</text>
+        <text x="45" y="182" text-anchor="middle" class="node-label" fill="#DC2626">CAMINO 1</text>
+        <!-- Camino 2: FALSE -->
+        <rect x="120" y="152" width="70" height="36" rx="8" fill="#FEF2F2" stroke="#9CA3AF" stroke-width="2" stroke-dasharray="4,3"/>
+        <text x="155" y="169" text-anchor="middle" class="node-label" fill="#6B7280">×0.90</text>
+        <text x="155" y="182" text-anchor="middle" class="node-label" fill="#9CA3AF">CAMINO 2</text>
+        <!-- FIN -->
+        <ellipse cx="100" cy="248" rx="40" ry="20" fill="#FEE2E2" stroke="#DC2626" stroke-width="2"/>
+        <text x="100" y="253" text-anchor="middle" class="node-label" fill="#991B1B">FIN</text>
+        <!-- Arrows -->
+        <line x1="100" y1="50" x2="100" y2="68" stroke="#DC2626" stroke-width="2" marker-end="url(#arrowR1)"/>
+        <line x1="62" y1="110" x2="45" y2="152" stroke="#DC2626" stroke-width="2" marker-end="url(#arrowR1)"/>
+        <line x1="138" y1="110" x2="155" y2="152" stroke="#9CA3AF" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowR2)"/>
+        <line x1="55" y1="188" x2="78" y2="228" stroke="#DC2626" stroke-width="2" marker-end="url(#arrowR1)"/>
+        <line x1="145" y1="188" x2="122" y2="228" stroke="#9CA3AF" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowR2)"/>
+        <text x="20" y="118" class="node-label" fill="#DC2626" font-weight="700">TRUE</text>
+        <text x="152" y="118" class="node-label" fill="#9CA3AF">FALSE</text>
+        <text x="100" y="280" text-anchor="middle" font-family="Inter" font-size="9" fill="#991B1B" font-weight="700">2 caminos → 2 casos</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ EJEMPLO COMPLETO ══════════════════════ -->
+  <div class="example-section">
+    <div class="section-label">Ejemplo aplicado</div>
+    <h3>función <code style="background:#EEF2FF;padding:2px 8px;border-radius:5px;color:#4338CA">descuento(monto)</code> — ¿Cuántos casos necesito?</h3>
+
+    <div class="code-block" style="margin-bottom: 20px;">
+<span class="kw">def</span> <span class="fn">descuento</span>(monto):
+    <span class="kw">if</span> monto &gt; <span class="num">100</span>:
+        <span class="kw">return</span> monto * <span class="num">0.80</span>   <span class="cm"># ← descuento 20%</span>
+    <span class="kw">return</span> monto * <span class="num">0.90</span>       <span class="cm"># ← descuento 10%</span>
+    </div>
+
+    <div class="ex-grid">
+      <div class="ex-card s">
+        <div class="big-num">2</div>
+        <div class="label">Cobertura de Sentencias</div>
+        <p style="font-size:.78rem;margin-top:8px;color:#374151">Caso 1: monto=150 (TRUE)<br>Caso 2: monto=50 (FALSE)</p>
+      </div>
+      <div class="ex-card d">
+        <div class="big-num">2</div>
+        <div class="label">Cobertura de Decisiones</div>
+        <p style="font-size:.78rem;margin-top:8px;color:#374151">Probar TRUE y FALSE<br>del único <em>if</em></p>
+      </div>
+      <div class="ex-card p">
+        <div class="big-num">2</div>
+        <div class="label">Cobertura de Caminos</div>
+        <p style="font-size:.78rem;margin-top:8px;color:#374151">Solo 2 rutas posibles<br>→ mismos 2 casos</p>
+      </div>
+    </div>
+
+    <p style="font-size:.82rem;color:#6B7280;margin-top:16px;padding:12px 16px;background:#F9FAFB;border-radius:10px;border:1px solid var(--border)">
+      ℹ️ <strong>Nota de examen:</strong> En este programa simple C1 = C2 = Caminos = 2 casos. La diferencia se nota con múltiples decisiones anidadas: más decisiones → más caminos que casos de decisión.
+    </p>
+  </div>
+
+  <!-- ═════════════════════ PRUEBAS DE BUCLES ═══════════════════ -->
+  <div class="example-section">
+    <div class="section-label">Tipo 5</div>
+    <h3>Pruebas de Bucles (Loop Testing)</h3>
+    <p style="font-size:.87rem;color:#374151;margin-bottom:20px">Validan el comportamiento correcto de los ciclos (<em>for, while</em>). Se prueban casos límite y extremos.</p>
+
+    <div class="loop-grid">
+      <div class="loop-card" style="border-top:3px solid var(--amber)">
+        <div class="loop-badge" style="background:var(--amber-lt);color:#92400E">Simple</div>
+        <h4>Bucle Simple</h4>
+        <p>Un solo ciclo. Se prueban: <strong>0 iteraciones</strong>, <strong>1 iteración</strong>, <strong>n iteraciones</strong> y el valor máximo esperado.</p>
+      </div>
+      <div class="loop-card" style="border-top:3px solid var(--teal)">
+        <div class="loop-badge" style="background:var(--teal-lt);color:#134E4A">Anidado</div>
+        <h4>Bucle Anidado</h4>
+        <p>Un bucle dentro de otro. Estrategia: probar el <strong>interno primero</strong> con mínimos del externo, luego combinar.</p>
+      </div>
+      <div class="loop-card" style="border-top:3px solid var(--violet)">
+        <div class="loop-badge" style="background:var(--indigo-lt);color:var(--violet)">Concatenado</div>
+        <h4>Bucle Concatenado</h4>
+        <p>Varios bucles en secuencia. Se prueban <strong>de forma independiente</strong>, como bucles simples individuales.</p>
+      </div>
+    </div>
+
+    <!-- Grafo visual de bucle simple -->
+    <div style="margin-top:28px;display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap">
+      <div>
+        <div class="graph-label" style="margin-bottom:8px;font-size:.7rem;font-weight:700;letter-spacing:.08em;color:var(--gray);text-transform:uppercase">Grafo: Bucle Simple</div>
+        <svg width="200" height="220" viewBox="0 0 200 220">
+          <defs>
+            <marker id="arrowL" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="#7C3AED"/>
+            </marker>
+          </defs>
+          <!-- INICIO -->
+          <ellipse cx="100" cy="26" rx="38" ry="20" fill="#EDE9FE" stroke="#7C3AED" stroke-width="2"/>
+          <text x="100" y="31" text-anchor="middle" class="node-label" fill="#5B21B6">INICIO</text>
+          <!-- Condición del bucle -->
+          <polygon points="100,62 148,88 100,114 52,88" fill="#F5F3FF" stroke="#7C3AED" stroke-width="2"/>
+          <text x="100" y="85" text-anchor="middle" class="node-label" fill="#5B21B6">i &lt; n ?</text>
+          <text x="100" y="99" text-anchor="middle" class="node-label" fill="#7C3AED">(condición)</text>
+          <!-- Cuerpo bucle -->
+          <rect x="20" y="128" width="68" height="32" rx="8" fill="#EDE9FE" stroke="#7C3AED" stroke-width="2"/>
+          <text x="54" y="147" text-anchor="middle" class="node-label" fill="#5B21B6">cuerpo(i)</text>
+          <!-- FIN -->
+          <ellipse cx="148" cy="144" rx="38" ry="20" fill="#EDE9FE" stroke="#7C3AED" stroke-width="2"/>
+          <text x="148" y="149" text-anchor="middle" class="node-label" fill="#5B21B6">SALIDA</text>
+          <!-- Aristas -->
+          <line x1="100" y1="46" x2="100" y2="62" stroke="#7C3AED" stroke-width="2" marker-end="url(#arrowL)"/>
+          <line x1="65" y1="96" x2="47" y2="128" stroke="#7C3AED" stroke-width="2" marker-end="url(#arrowL)"/>
+          <text x="22" y="116" class="node-label" fill="#7C3AED" font-weight="700">TRUE</text>
+          <!-- cuerpo → vuelve a condición -->
+          <path d="M 20 144 Q 6 100 52 88" fill="none" stroke="#7C3AED" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arrowL)"/>
+          <text x="2" y="118" class="node-label" fill="#9CA3AF">i++</text>
+          <!-- condición → salida (FALSE) -->
+          <line x1="138" y1="96" x2="147" y2="124" stroke="#7C3AED" stroke-width="2" marker-end="url(#arrowL)"/>
+          <text x="148" y="116" class="node-label" fill="#7C3AED">FALSE</text>
+          <!-- Casos de prueba indicados -->
+          <rect x="10" y="186" width="178" height="28" rx="8" fill="#EDE9FE" stroke="#C4B5FD"/>
+          <text x="99" y="200" text-anchor="middle" font-family="Inter" font-size="8.5" fill="#5B21B6" font-weight="700">Probar: 0 iter · 1 iter · n iters</text>
+          <text x="99" y="210" text-anchor="middle" font-family="Inter" font-size="8" fill="#6D28D9">→ bordes + caso normal</text>
+        </svg>
+      </div>
+      <div style="flex:1;min-width:220px">
+        <table class="comp-table" style="font-size:.8rem">
+          <tr>
+            <th>Caso de Prueba</th>
+            <th>Iteraciones</th>
+            <th>Por qué</th>
+          </tr>
+          <tr>
+            <td>n = 0</td>
+            <td>0 veces</td>
+            <td>¿Funciona sin entrar?</td>
+          </tr>
+          <tr>
+            <td>n = 1</td>
+            <td>1 vez</td>
+            <td>Caso mínimo</td>
+          </tr>
+          <tr>
+            <td>n = 5</td>
+            <td>varias veces</td>
+            <td>Caso normal</td>
+          </tr>
+          <tr>
+            <td>n = máx</td>
+            <td>máximo</td>
+            <td>Límite del sistema</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ TABLA COMPARATIVA ══════════════════════ -->
+  <div class="example-section">
+    <div class="section-label">Resumen</div>
+    <h3>Comparativa: todos los tipos de cobertura</h3>
+    <div class="comp-table-wrap" style="margin-top:16px">
+      <table class="comp-table">
+        <tr>
+          <th>Tipo</th>
+          <th>¿Qué cubre?</th>
+          <th>Casos mínimos</th>
+          <th>Dificultad</th>
+        </tr>
+        <tr>
+          <td>C1 · Sentencias</td>
+          <td>Cada instrucción ejecutada ≥ 1 vez</td>
+          <td>1 o más (depende del código)</td>
+          <td>🟢 Baja</td>
+        </tr>
+        <tr>
+          <td>C2 · Decisiones</td>
+          <td>Cada rama TRUE y FALSE</td>
+          <td>≥ 2 por decisión</td>
+          <td>🟡 Media</td>
+        </tr>
+        <tr>
+          <td>C3 · Condiciones (MCC)</td>
+          <td>Todas las combinaciones de sub-condiciones</td>
+          <td>2ⁿ (n = sub-condiciones)</td>
+          <td>🟠 Alta</td>
+        </tr>
+        <tr>
+          <td>C4 · Caminos</td>
+          <td>Todos los caminos posibles inicio→fin</td>
+          <td>= número de caminos únicos</td>
+          <td>🔴 Muy alta</td>
+        </tr>
+        <tr>
+          <td>Bucles</td>
+          <td>Comportamiento de ciclos</td>
+          <td>0, 1, n, máximo</td>
+          <td>🟡 Media</td>
+        </tr>
+      </table>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px">
+      <div style="background:var(--indigo-lt);border-radius:12px;padding:18px">
+        <p style="font-size:.8rem;font-weight:700;color:var(--indigo);margin-bottom:8px">⬜ Pruebas de Caja Blanca (Estructurales)</p>
+        <p style="font-size:.8rem;color:#374151">Acceso al código. Mide cobertura. La realiza el desarrollador. <strong>Verifica la lógica interna.</strong></p>
+      </div>
+      <div style="background:#F0FDF4;border-radius:12px;padding:18px;border:1px solid #BBF7D0">
+        <p style="font-size:.8rem;font-weight:700;color:var(--green);margin-bottom:8px">⬛ Pruebas de Caja Negra (Funcionales)</p>
+        <p style="font-size:.8rem;color:#374151">Sin acceso al código. Verifica requisitos. Puede realizarla un tester externo. <strong>Verifica lo que el usuario espera.</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ FOOTER NOTE ══════════════════════ -->
+  <div class="footer-note">
+    <strong>🧠 Regla de oro para exámenes</strong>
+    C1 (Sentencias) ≤ C2 (Decisiones) ≤ C3 (Condiciones MCC) ≤ C4 (Caminos) en términos de casos requeridos.
+    Si el programa tiene una sola decisión simple, las tres primeras coberturas suelen necesitar el mismo número de casos.
+    La diferencia se nota al tener <strong>condiciones compuestas</strong> (AND / OR) o múltiples decisiones anidadas.
+  </div>
+
+</main>
+</body>
+</html>
