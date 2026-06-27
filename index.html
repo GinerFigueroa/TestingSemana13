@@ -805,3 +805,448 @@ print(<span class="num">"Fin"</span>)            <span class="cm"># ← nodo 3</
 </main>
 </body>
 </html>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pruebas Estructurales - Guía Completa</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f7fc;
+            margin: 0;
+            padding: 20px;
+            color: #1e2a3a;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+        h1, h2, h3 {
+            color: #0b2b4a;
+        }
+        h1 {
+            border-bottom: 4px solid #2a7de1;
+            padding-bottom: 10px;
+        }
+        .card {
+            background: #f9faff;
+            border-left: 6px solid #2a7de1;
+            padding: 16px 22px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+        }
+        .card.warning {
+            border-left-color: #e67e22;
+            background: #fefaf5;
+        }
+        .card.success {
+            border-left-color: #27ae60;
+            background: #f0faf4;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        @media (max-width: 700px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.95rem;
+        }
+        th {
+            background: #1e3a5f;
+            color: white;
+            padding: 10px 12px;
+            text-align: left;
+        }
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e0e7ef;
+        }
+        .highlight {
+            background: #eef4ff;
+            font-weight: 600;
+        }
+        .badge {
+            display: inline-block;
+            background: #2a7de1;
+            color: white;
+            font-weight: 600;
+            padding: 2px 12px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+        }
+        .badge.orange {
+            background: #e67e22;
+        }
+        .badge.green {
+            background: #27ae60;
+        }
+        .graph-box {
+            background: #ffffff;
+            border: 2px dashed #b0c7e7;
+            border-radius: 18px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+        .graph-box svg {
+            max-width: 100%;
+            height: auto;
+        }
+        .code-block {
+            background: #0d1b2a;
+            color: #e3eaf0;
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        .inline-code {
+            background: #eaf0f8;
+            padding: 2px 10px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        hr {
+            margin: 40px 0 20px;
+            border: 1px solid #dfe6ef;
+        }
+        ul, ol {
+            line-height: 1.7;
+        }
+        .footer-note {
+            background: #eaf2fd;
+            padding: 16px 22px;
+            border-radius: 14px;
+            margin-top: 30px;
+            border: 1px solid #c9daf5;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <h1>🧪 Pruebas Estructurales (Caja Blanca)</h1>
+    <p style="font-size:1.1rem; color:#2c3e50;"><strong>Resumen completo:</strong> cobertura de sentencias (C1), decisión (C2), condición (C3), caminos (C4), bucles y grafos de flujo de control.</p>
+
+    <!-- ========================== -->
+    <!--  RESUMEN RÁPIDO            -->
+    <!-- ========================== -->
+    <div class="card success">
+        <h2>📌 Resumen rápido</h2>
+        <div class="grid-2">
+            <div>
+                <p><span class="badge">C1</span> <strong>Cobertura de sentencias</strong> → ejecutar todos los nodos (instrucciones) al menos una vez.</p>
+                <p><span class="badge orange">C2</span> <strong>Cobertura de decisión</strong> → cada decisión (if/else) tome true y false.</p>
+                <p><span class="badge green">C3</span> <strong>Cobertura de condición</strong> → cada condición atómica (ej: A>2) sea V y F.</p>
+                <p><span class="badge" style="background:#8e44ad;">C4</span> <strong>Cobertura de caminos</strong> → recorrer todas las rutas posibles del grafo.</p>
+            </div>
+            <div>
+                <p><strong>✅ Base de análisis:</strong> Grafo de flujo de control.</p>
+                <p><strong>🔹 Nodos</strong> → instrucciones o bloques.</p>
+                <p><strong>🔹 Aristas</strong> → flujo de ejecución (flechas).</p>
+                <p><strong>🔹 Regiones</strong> → áreas cerradas (se usan para complejidad ciclomática).</p>
+                <p><strong>🔹 Caminos</strong> → secuencia inicio → fin.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================== -->
+    <!--  EJEMPLOS C1, C2, C3, C4  -->
+    <!-- ========================== -->
+    <h2>📘 Ejemplos prácticos: ¿cuántos casos de prueba?</h2>
+
+    <div class="grid-2">
+        <div class="card">
+            <h3>🔹 Ejemplo 1 (if simple)</h3>
+            <div class="code-block">
+                if (a > 2) {<br>
+                &nbsp;&nbsp;b = b + 1;<br>
+                } else {<br>
+                &nbsp;&nbsp;b = b - 1;<br>
+                }
+            </div>
+            <table>
+                <tr><th>Cobertura</th><th>Casos</th><th>Explicación</th></tr>
+                <tr><td>C1 (sentencias)</td><td><strong>1</strong></td><td>Con a=3 se ejecuta todo (incluido el else? No, pero todas las sentencias posibles se ejecutan en una ruta).</td></tr>
+                <tr><td>C2 (decisión)</td><td><strong>2</strong></td><td>a=3 (true), a=1 (false)</td></tr>
+                <tr><td>C3 (condición)</td><td>2</td><td>solo hay una condición atómica (a>2) → V/F</td></tr>
+                <tr><td>C4 (caminos)</td><td><strong>2</strong></td><td>camino true y camino false</td></tr>
+            </table>
+        </div>
+
+        <div class="card">
+            <h3>🔸 Ejemplo 2 (condición compuesta)</h3>
+            <div class="code-block">
+                if (x > 3 && y > 0) {<br>
+                &nbsp;&nbsp;x = x + y;<br>
+                } else {<br>
+                &nbsp;&nbsp;x = 0;<br>
+                }
+            </div>
+            <table>
+                <tr><th>Cobertura</th><th>Casos</th><th>Explicación</th></tr>
+                <tr><td>C1 (sentencias)</td><td><strong>2</strong></td><td>necesitas true y false para cubrir ambas ramas</td></tr>
+                <tr><td>C2 (decisión)</td><td><strong>2</td><td>true (5,2) y false (1,2)</td></tr>
+                <tr><td>C3 (condición)</td><td><strong>2</strong></td><td>cada condición atómica V/F: (x>3) y (y>0) con 2 casos basta para cubrir ambas</td></tr>
+                <tr><td>C4 (caminos)</td><td><strong>2</strong></td><td>solo 2 caminos: true y false</td></tr>
+            </table>
+            <p style="font-size:0.9rem; margin-top:6px;">⚠️ <strong>MCC (múltiple condición)</strong> necesitaría 4 casos (todas las combinaciones de V/F).</p>
+        </div>
+    </div>
+
+    <!-- ========================== -->
+    <!--  CONTEO EN GRAFOS CON BUCLES -->
+    <!-- ========================== -->
+    <hr>
+    <h2>🧮 ¿Cómo se cuentan los casos de prueba en grafos con bucles?</h2>
+    <div class="card warning">
+        <p><strong>Regla clave:</strong> en presencia de bucles, <strong>C1 (sentencias)</strong> y <strong>C2 (decisión)</strong> siguen siendo finitos, pero <strong>C4 (caminos)</strong> puede ser infinito si el bucle no tiene límite.</p>
+        <p>En la práctica, para <strong>C4</strong> se usan <strong>rutas independientes</strong> (complejidad ciclomática) y se prueban casos típicos: 0, 1, n iteraciones.</p>
+    </div>
+
+    <h3>📊 Ejemplo de grafo con 10 nodos y 2 bucles</h3>
+    <div class="graph-box">
+        <svg viewBox="0 0 700 380" xmlns="http://www.w3.org/2000/svg" style="background:#fafcff; border-radius:12px;">
+            <!-- Nodos (círculos) -->
+            <circle cx="80" cy="60" r="22" fill="#2a7de1" stroke="#1a4a7a" stroke-width="2" />
+            <text x="72" y="67" fill="white" font-size="14" font-weight="bold">1</text>
+
+            <circle cx="200" cy="60" r="22" fill="#2a7de1" stroke="#1a4a7a" stroke-width="2" />
+            <text x="192" y="67" fill="white" font-size="14" font-weight="bold">2</text>
+
+            <circle cx="330" cy="60" r="22" fill="#e67e22" stroke="#a3540f" stroke-width="2" />
+            <text x="322" y="67" fill="white" font-size="14" font-weight="bold">3</text>
+
+            <circle cx="460" cy="60" r="22" fill="#2a7de1" stroke="#1a4a7a" stroke-width="2" />
+            <text x="452" y="67" fill="white" font-size="14" font-weight="bold">4</text>
+
+            <circle cx="580" cy="60" r="22" fill="#2a7de1" stroke="#1a4a7a" stroke-width="2" />
+            <text x="572" y="67" fill="white" font-size="14" font-weight="bold">5</text>
+
+            <!-- Fila inferior -->
+            <circle cx="80" cy="240" r="22" fill="#2a7de1" stroke="#1a4a7a" stroke-width="2" />
+            <text x="72" y="247" fill="white" font-size="14" font-weight="bold">6</text>
+
+            <circle cx="200" cy="240" r="22" fill="#27ae60" stroke="#1a6b3c" stroke-width="2" />
+            <text x="192" y="247" fill="white" font-size="14" font-weight="bold">7</text>
+
+            <circle cx="330" cy="240" r="22" fill="#2a7de1" stroke="#1a4a7a" stroke-width="2" />
+            <text x="322" y="247" fill="white" font-size="14" font-weight="bold">8</text>
+
+            <circle cx="460" cy="240" r="22" fill="#27ae60" stroke="#1a6b3c" stroke-width="2" />
+            <text x="452" y="247" fill="white" font-size="14" font-weight="bold">9</text>
+
+            <circle cx="580" cy="240" r="22" fill="#8e44ad" stroke="#5b2c7a" stroke-width="2" />
+            <text x="572" y="247" fill="white" font-size="14" font-weight="bold">10</text>
+
+            <!-- Aristas (flechas) -->
+            <line x1="102" y1="60" x2="178" y2="60" stroke="#1e3a5f" stroke-width="2.5" marker-end="url(#arrow)" />
+            <line x1="222" y1="60" x2="308" y2="60" stroke="#1e3a5f" stroke-width="2.5" marker-end="url(#arrow)" />
+            <line x1="352" y1="60" x2="438" y2="60" stroke="#1e3a5f" stroke-width="2.5" marker-end="url(#arrow)" />
+            <line x1="482" y1="60" x2="558" y2="60" stroke="#1e3a5f" stroke-width="2.5" marker-end="url(#arrow)" />
+
+            <!-- Flechas verticales (decisiones) -->
+            <line x1="140" y1="82" x2="140" y2="218" stroke="#e67e22" stroke-width="2.5" stroke-dasharray="6 4" marker-end="url(#arrow)" />
+            <line x1="390" y1="82" x2="390" y2="218" stroke="#e67e22" stroke-width="2.5" stroke-dasharray="6 4" marker-end="url(#arrow)" />
+
+            <!-- Flechas inferiores -->
+            <line x1="102" y1="240" x2="178" y2="240" stroke="#1e3a5f" stroke-width="2.5" marker-end="url(#arrow)" />
+            <line x1="222" y1="240" x2="308" y2="240" stroke="#1e3a5f" stroke-width="2.5" marker-end="url(#arrow)" />
+            <line x1="352" y1="240" x2="438" y2="240" stroke="#1e3a5f" stroke-width="2.5" marker-end="url(#arrow)" />
+            <line x1="482" y1="240" x2="558" y2="240" stroke="#1e3a5f" stroke-width="2.5" marker-end="url(#arrow)" />
+
+            <!-- Bucles (flechas que vuelven atrás) -->
+            <path d="M 200 82 Q 200 140 140 140 Q 80 140 80 218" fill="none" stroke="#c0392b" stroke-width="2.5" stroke-dasharray="6 3" marker-end="url(#arrow-red)" />
+            <path d="M 460 82 Q 460 140 390 140 Q 330 140 330 218" fill="none" stroke="#c0392b" stroke-width="2.5" stroke-dasharray="6 3" marker-end="url(#arrow-red)" />
+
+            <!-- Flecha de retorno al inicio -->
+            <path d="M 580 240 Q 620 240 620 60 Q 620 20 580 20 L 102 20" fill="none" stroke="#8e44ad" stroke-width="2" stroke-dasharray="8 4" marker-end="url(#arrow-purple)" />
+
+            <!-- Definición de marcadores de flecha -->
+            <defs>
+                <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#1e3a5f" />
+                </marker>
+                <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#c0392b" />
+                </marker>
+                <marker id="arrow-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#8e44ad" />
+                </marker>
+            </defs>
+
+            <!-- Etiquetas -->
+            <text x="140" y="170" fill="#c0392b" font-size="12" font-weight="bold" text-anchor="middle">bucle 1</text>
+            <text x="390" y="170" fill="#c0392b" font-size="12" font-weight="bold" text-anchor="middle">bucle 2</text>
+            <text x="660" y="140" fill="#8e44ad" font-size="11" transform="rotate(90, 660, 140)">retorno</text>
+            <text x="330" y="20" fill="#1e3a5f" font-size="13" font-weight="bold" text-anchor="middle">Grafo con 10 nodos y 2 bucles</text>
+        </svg>
+        <p style="margin-top:10px; font-size:0.9rem; color:#2c3e50;">
+            <span style="background:#2a7de1; color:white; padding:2px 8px; border-radius:30px;">Nodos</span> 
+            <span style="background:#e67e22; color:white; padding:2px 8px; border-radius:30px;">Decisión</span> 
+            <span style="background:#27ae60; color:white; padding:2px 8px; border-radius:30px;">Bucle</span> 
+            <span style="background:#8e44ad; color:white; padding:2px 8px; border-radius:30px;">Fin/Inicio</span>
+        </p>
+    </div>
+
+    <h3>📋 ¿Cómo se cuentan los casos de prueba para este grafo?</h3>
+
+    <table>
+        <thead>
+            <tr><th>Cobertura</th><th>Número de casos</th><th>Explicación</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>C1 (sentencias)</strong></td>
+                <td><span class="badge">2</span></td>
+                <td>Con 2 casos (uno que recorre la rama superior y uno la inferior) se ejecutan todos los nodos. Los bucles se ejecutan al menos una vez.</td>
+            </tr>
+            <tr>
+                <td><strong>C2 (decisión)</strong></td>
+                <td><span class="badge orange">4</span></td>
+                <td>Hay 2 decisiones (nodos 3 y 4). Cada una necesita true/false → 2 × 2 = 4 casos.</td>
+            </tr>
+            <tr>
+                <td><strong>C3 (condición)</strong></td>
+                <td><span class="badge green">4</span></td>
+                <td>Si cada decisión tiene 1 condición atómica, con 4 casos cubres V/F de cada una.</td>
+            </tr>
+            <tr>
+                <td><strong>C4 (caminos)</strong></td>
+                <td><span class="badge" style="background:#8e44ad;">∞ (infinitos)</span> / <strong>rutas base: 6</strong></td>
+                <td>Los bucles generan infinitos caminos. En la práctica se usan <strong>rutas independientes</strong> (complejidad ciclomática) = Aristas - Nodos + 2 = (14 - 10 + 2) = 6 rutas base. Luego se añaden casos para 0, 1, n iteraciones.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="card warning">
+        <p><strong>🧠 Regla de oro para bucles:</strong></p>
+        <ul>
+            <li><strong>C1 y C2</strong> → siempre finitos, se cuentan nodos y decisiones.</li>
+            <li><strong>C4 (caminos)</strong> → en bucles se usa <strong>complejidad ciclomática</strong> para obtener rutas independientes, y luego se añaden casos de borde (0, 1, máximo).</li>
+            <li>Los bucles <strong>no estructurados</strong> (con goto/break) aumentan la complejidad y no tienen una estrategia estándar.</li>
+        </ul>
+    </div>
+
+    <!-- ========================== -->
+    <!--  EJERCICIOS DIFÍCILES      -->
+    <!-- ========================== -->
+    <hr>
+    <h2>🧩 Ejercicios difíciles para practicar C1, C2, C3, C4</h2>
+
+    <div class="grid-2">
+        <div class="card">
+            <h3>🔴 Ejercicio 1 (condiciones anidadas)</h3>
+            <div class="code-block">
+                if (A > 5) {<br>
+                &nbsp;&nbsp;if (B < 10) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;x = 1;<br>
+                &nbsp;&nbsp;} else {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;x = 2;<br>
+                &nbsp;&nbsp;}<br>
+                } else {<br>
+                &nbsp;&nbsp;x = 3;<br>
+                }
+            </div>
+            <p><strong>Pregunta:</strong> ¿Cuántos casos para C1, C2, C3 y C4?</p>
+            <details>
+                <summary style="cursor:pointer; background:#eaf0f8; padding:8px; border-radius:8px;">📌 Ver solución</summary>
+                <ul>
+                    <li><strong>C1:</strong> 2 casos (uno por cada rama principal).</li>
+                    <li><strong>C2:</strong> 3 casos (A>5 true/false, y dentro B<10 true/false).</li>
+                    <li><strong>C3:</strong> 3 casos (A>5 V/F, B<10 V/F).</li>
+                    <li><strong>C4:</strong> 3 caminos (A>5→B<10, A>5→B>=10, A<=5).</li>
+                </ul>
+            </details>
+        </div>
+
+        <div class="card">
+            <h3>🟣 Ejercicio 2 (bucle con condición)</h3>
+            <div class="code-block">
+                for (i=0; i<10; i++) {<br>
+                &nbsp;&nbsp;if (i % 2 == 0) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;sum += i;<br>
+                &nbsp;&nbsp;}<br>
+                }
+            </div>
+            <p><strong>Pregunta:</strong> C1, C2, C3, C4 (considera el bucle).</p>
+            <details>
+                <summary style="cursor:pointer; background:#eaf0f8; padding:8px; border-radius:8px;">📌 Ver solución</summary>
+                <ul>
+                    <li><strong>C1:</strong> 1 caso (ejecuta todas las sentencias).</li>
+                    <li><strong>C2:</strong> 2 casos (if true/false).</li>
+                    <li><strong>C3:</strong> 2 casos (i%2==0 V/F).</li>
+                    <li><strong>C4:</strong> infinito (el bucle da muchos caminos). Se prueban 0, 1, 5, 10 iteraciones.</li>
+                </ul>
+            </details>
+        </div>
+    </div>
+
+    <!-- ========================== -->
+    <!--  RESUMEN DE BUCLES         -->
+    <!-- ========================== -->
+    <hr>
+    <h2>🔄 Resumen de pruebas de bucles</h2>
+    <table>
+        <tr><th>Tipo de bucle</th><th>Cómo se prueba</th><th>Casos típicos</th></tr>
+        <tr><td><strong>Simple</strong></td><td>0, 1, n iteraciones</td><td>3 casos base</td></tr>
+        <tr><td><strong>Anidado</strong></td><td>Desde el más interno hacia afuera</td><td>Combinaciones</td></tr>
+        <tr><td><strong>Concatenado</strong></td><td>Se prueban por separado</td><td>Independientes</td></tr>
+        <tr><td><strong>No estructurado</strong></td><td>Difícil, se cubren caminos con saltos</td><td>Depende del flujo</td></tr>
+    </table>
+
+    <!-- ========================== -->
+    <!--  CÓMO SE CUENTAN ARISTAS   -->
+    <!-- ========================== -->
+    <div class="card">
+        <h3>📏 ¿Cómo se cuentan las aristas entre dos nodos?</h3>
+        <p><strong>Regla:</strong> cada flecha (arista) se cuenta como una conexión. En el grafo anterior hay <strong>14 aristas</strong>.</p>
+        <ul>
+            <li><strong>Sentencia (C1):</strong> no importa el número de aristas, solo los nodos.</li>
+            <li><strong>Decisión (C2):</strong> cada arista que sale de un nodo de decisión cuenta como una rama (true/false).</li>
+            <li><strong>Caminos (C4):</strong> las aristas definen las rutas. Número de caminos = combinaciones de aristas.</li>
+        </ul>
+        <p><strong>Fórmula de complejidad ciclomática:</strong> <span class="inline-code">V(G) = Aristas - Nodos + 2</span> → 14 - 10 + 2 = <strong>6 rutas independientes</strong>.</p>
+    </div>
+
+    <!-- ========================== -->
+    <!--  FOOTER                    -->
+    <!-- ========================== -->
+    <div class="footer-note">
+        <p style="margin:0; font-weight:600;">✅ En resumen:</p>
+        <ul style="margin-top:6px;">
+            <li><strong>C1 (sentencias):</strong> cubrir nodos → casos = caminos que cubran todos los nodos.</li>
+            <li><strong>C2 (decisión):</strong> cubrir aristas true/false → casos = 2 × número de decisiones.</li>
+            <li><strong>C3 (condición):</strong> cubrir condiciones atómicas V/F.</li>
+            <li><strong>C4 (caminos):</strong> con bucles → infinito, se usan rutas base + casos borde.</li>
+            <li><strong>En grafos con bucles:</strong> C1 y C2 son finitos, C4 requiere criterio (0, 1, n, máximo).</li>
+        </ul>
+        <p style="margin-top:10px; font-size:0.9rem; color:#2c3e50;">
+            📌 <strong>Tip:</strong> para exámenes, recuerda que <em>“C1 ≤ C2 ≤ C4”</em> en general, y con bucles C4 puede ser mucho mayor o infinito.
+        </p>
+    </div>
+
+</div>
+</body>
+</html>
